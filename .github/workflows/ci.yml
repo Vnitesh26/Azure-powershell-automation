@@ -1,23 +1,26 @@
-name: Azure PowerShell Automation
+name: Run PowerShell Script on Ubuntu
 
 on:
   push:
     branches:
-      - main
+      - main  # Change this if you use a different branch
 
 jobs:
-  build:
+  run-vm-script:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Setup PowerShell
-      uses: actions/setup-pwsh@v1
+    - name: Install PowerShell
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget apt-transport-https software-properties-common
+        wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+        sudo dpkg -i packages-microsoft-prod.deb
+        sudo apt-get update
+        sudo apt-get install -y powershell
 
-    - name: Run PowerShell script
-      shell: pwsh
-      run: ./create-vm.ps1
-      env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Run PowerShell script to create Azure VM
+      run: pwsh ./create-vm.ps1
