@@ -1,0 +1,23 @@
+name: Azure PowerShell Automation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Setup PowerShell
+      uses: actions/setup-pwsh@v1
+
+    - name: Run PowerShell script
+      shell: pwsh
+      run: ./create-vm.ps1
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
